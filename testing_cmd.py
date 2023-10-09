@@ -12,17 +12,17 @@ class MyCLI(cmd.Cmd):
             print("hi you!")
 
     def do_time(self, arg):
-        """Displaying the current time when requested"""
+        """Displaying the current time when requested, using iso format"""
         this_moment = datetime.now()
-        print("The current time now is: ", this_moment)
+        print("The current time now is: ", this_moment.isoformat())
 
     def do_EOF(self, arg):
         """Exiting the program with ctrl D"""
         return True
-    
+
     def do_exit(self, arg):
         """Exiting the console with exit or ctrl C"""
         return True
-    
+
 if __name__ == "__main__":
     MyCLI().cmdloop()
