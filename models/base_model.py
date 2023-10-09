@@ -13,7 +13,7 @@ class BaseModel():
     Defining parent class for future inheritance
     """
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         """Initializing attributes of the instances of the class"""
 
         """generating random uuid and converting to a string format"""
@@ -21,6 +21,15 @@ class BaseModel():
 
         self.created_at = datetime.now()
         self.updated_at = datetime.now()
+
+        if kwargs:
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    setattr(self, key, value)
+
+                    if key == 'created_at' or key == 'updated_at':
+                        setattr(self, key, datetime.strptime
+                                (value, '%Y-%m-%dT%H:%M:%S.%f'))
 
     def __str__(self):
         """returns informal representation of an instance
