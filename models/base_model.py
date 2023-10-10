@@ -29,8 +29,6 @@ class BaseModel():
 
                     if key == 'created_at' or key == 'updated_at':
                         setattr(self, key, datetime.fromisoformat(value))
-                    else:
-                        setattr(self, key, value)
 
     def __str__(self):
         """returns informal representation of an instance
