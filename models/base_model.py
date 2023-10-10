@@ -1,65 +1,54 @@
 #!/usr/bin/python3
+"""Type module of BaseModel"""
 
-"""Contains the class BaseModel that defines all common attributes/methods
- for other classes:
-"""
 import models
+from uuid import uuid4
 from datetime import datetime
-import uuid
+from models import storage
 
 
 class BaseModel():
     """
-    Defining parent class for future inheritance
-    """
+    Defining parent class for future inheritance"""
+
 
     def __init__(self, *args, **kwargs):
-        """Initializing attributes of the instances of the class"""
-
-        """generating random uuid and converting to a string format"""
-        self.id = str(uuid.uuid4())
-
-        self.created_at = datetime.now()
-        self.updated_at = datetime.now()
-
-        if kwargs:
-            for key, value in kwargs.items():
-                if key != '__class__':
-                    setattr(self, key, value)
-
-                    if key == 'created_at' or key == 'updated_at':
-                        setattr(self, key, datetime.fromisoformat(value))
-
-    def __str__(self):
-        """returns informal representation of an instance
-        in the format [<class name>] (<self.id>) <self.__dict__>"""
-
-        return "[{}] ({}) {}".format(
-            self.__class__.__name__, self.id, self.__dict__)
+        """Type method initialize"""
+        timeformat = "%Y-%m-%dT%H:%M:%S.%f"
+        if len(kwargs) != 0:
+            for key, val in kwargs.items():
+                if key == "created_at" or key == "updated_at":
+                    setattr(self, key, datetime.strptime(val, timeformat))
+                elif key != '__class__':
+                    setattr(self, key, val)
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.today()
+            self.updated_at = datetime.today()
+            models.storage.new(self)
 
     def save(self):
         """updates the public instance attribute updated_at
-        with the current datetime
+        with the current datetime and saves the instance using storage
         """
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
-        returns a dictionary containing all keys/values of __dict__
+        returns a dictionary containing all keys/values of dict
         of the instance
         """
-
         resulting_dict = self.__dict__.copy()
-        """
-        created_at and updated_at converted to string object in ISO format
-        """
         resulting_dict["created_at"] = self.created_at.isoformat()
         resulting_dict["updated_at"] = self.updated_at.isoformat()
-
-        """
-        a key __class__ must be added to this dictionary
-        with the class name of the object
-        """
-        resulting_dict["__class__"] = self.__class__.__name__
-
+        resulting_dict["class"] = self.__class__.__name__
+        
         return resulting_dict
+
+    def __str__(self):
+        """returns informal representation of an instance
+        in the format [<class name>] (<self.id>) <self.to_dict>"""
+        return "[{}] ({}) {}".format(
+            self.__class__.__name__, self.id, self.to_dict())
+
