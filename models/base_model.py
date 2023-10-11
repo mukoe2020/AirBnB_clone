@@ -30,6 +30,9 @@ class BaseModel():
                     if key == 'created_at' or key == 'updated_at':
                         setattr(self, key, datetime.fromisoformat(value))
 
+        else:
+            models.storage.new(self)
+
     def __str__(self):
         """returns informal representation of an instance
         in the format [<class name>] (<self.id>) <self.__dict__>"""
@@ -42,6 +45,7 @@ class BaseModel():
         with the current datetime
         """
         self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self):
         """
