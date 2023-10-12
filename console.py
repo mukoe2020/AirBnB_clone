@@ -104,7 +104,7 @@ class HBNBCommand(cmd.Cmd):
                     models.storage.save()
                 else:
                     print("** no instance found **")
-
+        
     def do_all(self, argument):
         objs = models.storage.all()
 
@@ -119,6 +119,7 @@ class HBNBCommand(cmd.Cmd):
                 print([str(obj) for obj in objs.values()
                        if obj.__class__.__name__ == class_name])
 
+   
     def do_update(self, argument):
         args = argument.split(" ")
 
@@ -142,6 +143,24 @@ class HBNBCommand(cmd.Cmd):
                     instance.save()
             else:
                 print("** no instance found **")
+
+    def do_user_all(self, argument):
+        instances = User.all()
+        for instance in instances:
+            print(instance)
+         
+    def do_count(self, class_name):
+        """ Count the number of instances of a class """
+        if class_name in class_names:
+            class_type = class_names[class_name]
+            all_instances = [obj for obj in models.storage.all().values() if isinstance(obj, class_type)]
+            count = len(all_instances)
+            print(count)
+        else:
+            print(f"** class '{class_name}' doesn't exist **")
+
+
+
 
 
 """prevents execution when code is imported"""
