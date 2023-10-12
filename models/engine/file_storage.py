@@ -15,7 +15,8 @@ class FileStorage:
         'BaseModel': BaseModel,
         'User': User
     }
-
+    
+    
     def all(self):
         """ Returns the dictionary __objects """
         return FileStorage.__objects
