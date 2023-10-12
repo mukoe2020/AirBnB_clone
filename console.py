@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import cmd
-from gc import get_objects
 import models
 from models.base_model import BaseModel
 
