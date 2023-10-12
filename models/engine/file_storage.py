@@ -2,6 +2,7 @@
 import json
 import models
 from models.base_model import BaseModel
+from models.base_model import User
 
 
 class FileStorage:
