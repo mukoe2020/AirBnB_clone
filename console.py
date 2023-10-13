@@ -71,6 +71,8 @@ class HBNBCommand(cmd.Cmd):
             elif within_p == "count":
                 print(len(list_objects(handle_parenthesis(command))))
                 return
+            elif within_p == "update":
+                return self.do_update(handle_parenthesis(command))
         return super(HBNBCommand, self).onecmd(command)
 
     def do_quit(self, argument):
