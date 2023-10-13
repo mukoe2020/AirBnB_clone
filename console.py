@@ -23,10 +23,55 @@ class_names = {
 }
 
 
+def list_objects(argument):
+    """Returns objects in the storage in a list format"""
+
+    objects = models.storage.all()
+    list_objects = []
+    for key, value in objects.items():
+        if argument[0] == "":
+            list_objects.append(str(value))
+            continue
+        if argument[0] == key[:len(argument[0])]:
+            list_objects.append(str(value))
+    return list_objects
+
+
+def handle_parenthesis(command):
+    """ handles parenthesis and extracts command within parenthesis"""
+
+    if command.find("(") + 1 == command.find(")"):
+        return "{}".format(command[:command.find(".")])
+
+    return "{} {}".format(
+        command[:command.find(".")],
+        command[command.find(
+            "(") + 1:-1].replace('"', '').replace(",", "")
+        )
+
+
 class HBNBCommand(cmd.Cmd):
     """Contains the entry point of the command interpreter."""
 
     prompt = "(hbnb) "
+
+    def onecmd(self, command):
+        """Handles user input such as User.all(), User.show(), User.count()
+        and co
+        """
+        c = command.split(".")
+        if len(c) > 1:
+            within_p = command[command.index(".") + 1:command.index("(")]
+            if within_p == "all":
+                return self.do_all(command[:command.index(".")])
+            elif within_p == "show":
+                return self.do_show(handle_parenthesis(command))
+            elif within_p == "destroy":
+                return self.do_destroy(handle_parenthesis(command))
+            elif within_p == "count":
+                print(len(list_objects(handle_parenthesis(command))))
+                return
+        return super(HBNBCommand, self).onecmd(command)
 
     def do_quit(self, argument):
         """Quits the command interpreter"""
@@ -79,26 +124,6 @@ class HBNBCommand(cmd.Cmd):
                 if key in objs.keys():
                     print(objs[key])
                 else:
-                    print("No instance found")
-
-    def do_destroy(self, argument):
-        """Deletes an instance based on the class name and ID
-        (saves the change into the JSON file)
-        """
-        if not argument:
-            print("** class name missing **")
-        else:
-            args = argument.split(" ")
-            if args[0] not in class_names:
-                print("** class doesn't exist **")
-            elif len(args) < 2:
-                print("** instance id missing **")
-            else:
-                objs = models.storage.all()
-                key = args[0] + "." + args[1]
-                if key in objs.keys():
-                    print(objs[key])
-                else:
                     print("** no instance found **")
 
     def do_destroy(self, argument):
@@ -123,20 +148,22 @@ class HBNBCommand(cmd.Cmd):
                     print("** no instance found **")
 
     def do_all(self, argument):
+        """ Prints all string representation of all instances based
+        or not on the class name"""
         objs = models.storage.all()
 
-        if not argument:
-            print([str(obj) for obj in objs.values()])
+        args = argument.split(" ")
+
+        if args[0] != "" and args[0] not in class_names:
+            print("** class doesn't exist **")
         else:
-            args = argument.split(" ")
-            if args[0] not in class_names:
-                print("** class doesn't exist **")
-            else:
-                class_name = args[0]
-                print([str(obj) for obj in objs.values()
-                       if obj.__class__.__name__ == class_name])
+            print(list_objects(args))
 
     def do_update(self, argument):
+        """ Updates an instance based on the class name and id
+        by adding or updating attribute (save the change into the
+        JSON file)
+        """
         args = argument.split(" ")
 
         if not argument:
