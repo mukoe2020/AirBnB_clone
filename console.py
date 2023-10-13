@@ -37,17 +37,78 @@ def list_objects(argument):
     return list_objects
 
 
-def handle_parenthesis(command):
-    """ handles parenthesis and extracts command within parenthesis"""
+def handle_parenthesis(argument):
+    """ handles parenthesis and extracts argument within parenthesis"""
 
-    if command.find("(") + 1 == command.find(")"):
-        return "{}".format(command[:command.find(".")])
+    if argument.find("(") + 1 == argument.find(")"):
+        return "{}".format(argument[:argument.find(".")])
 
     return "{} {}".format(
-        command[:command.find(".")],
-        command[command.find(
+        argument[:argument.find(".")],
+        argument[argument.find(
             "(") + 1:-1].replace('"', '').replace(",", "")
         )
+
+
+def updating_instance(instance, attr, attr_value):
+    """Updates or adds attributes of an instance"""
+
+    """Get the current value of the attribute 'attr' in 'instance'"""
+    value = getattr(instance, attr, None)
+    """Check if the attribute 'attr' exists in 'instance'"""
+    if value is None:
+        """if it does not, set the attribute with its value"""
+        setattr(
+            instance,
+            attr, attr_value.replace('"', "")
+        )
+        """If it exists, determine the data type and update the attribute"""
+    else:
+        value_type = type(getattr(instance, attr))
+        setattr(instance, attr,
+                value_type(attr_value.replace('"', "")))
+
+
+def updating_instance_with_dict(argument):
+    """
+     update an instance based on his ID with a dictionary:
+     <class name>.update(<id>, <dictionary representation>)
+    """
+
+    argument_list = argument[
+        argument.index("{") + 1:argument.index("}")
+    ].replace(":", "").split(" ")
+    arguments = argument[
+        :argument.index("{")
+    ].replace('"', '').replace(", ", "").replace(".update(", " ").split(" ")
+    if len(arguments) == 0 or arguments[0] == "":
+        print("** class name missing **")
+    elif arguments[0] not in class_names:
+        print("** class doesn't exist **")
+    elif len(arguments) < 2:
+        print("** instance id missing **")
+    else:
+        objects = models.storage.all()
+        key = ".".join(arguments)
+        if key in objects.keys():
+            if len(argument_list) == 0:
+                print("** attribute name missing **")
+            elif len(arguments) % 2 != 0:
+                print("** value missing **")
+            else:
+                instance = objects[key]
+                for i in range(0, len(argument_list), 2):
+                    updating_instance(
+                        instance,
+                        argument_list[i].replace("'", "").replace('"', ""),
+                        argument_list[i + 1]
+                    )
+                instance.save()
+        else:
+            print("** no instance found **")
+
+
+"""****************CONSOLE OR INTERPRETER METHODS***********************"""
 
 
 class HBNBCommand(cmd.Cmd):
@@ -55,25 +116,29 @@ class HBNBCommand(cmd.Cmd):
 
     prompt = "(hbnb) "
 
-    def onecmd(self, command):
+    def onecmd(self, argument):
         """Handles user input such as User.all(), User.show(), User.count()
         and co
         """
-        c = command.split(".")
+        c = argument.split(".")
         if len(c) > 1:
-            within_p = command[command.index(".") + 1:command.index("(")]
+            within_p = argument[argument.index(".") + 1:argument.index("(")]
             if within_p == "all":
-                return self.do_all(command[:command.index(".")])
+                return self.do_all(argument[:argument.index(".")])
             elif within_p == "show":
-                return self.do_show(handle_parenthesis(command))
+                return self.do_show(handle_parenthesis(argument))
             elif within_p == "destroy":
-                return self.do_destroy(handle_parenthesis(command))
+                return self.do_destroy(handle_parenthesis(argument))
             elif within_p == "count":
-                print(len(list_objects(handle_parenthesis(command))))
+                print(len(list_objects(handle_parenthesis(argument))))
                 return
             elif within_p == "update":
-                return self.do_update(handle_parenthesis(command))
-        return super(HBNBCommand, self).onecmd(command)
+                if argument.find("{") >= 0:
+                    updating_instance_with_dict(argument)
+                    return
+                else:
+                    return self.do_update(handle_parenthesis(argument))
+        return super(HBNBCommand, self).onecmd(argument)
 
     def do_quit(self, argument):
         """Quits the command interpreter"""
