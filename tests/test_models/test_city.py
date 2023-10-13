@@ -121,3 +121,6 @@ class TestCity(unittest.TestCase):
             f"[{model.__class__.__name__}] ({model.id}) {model.__dict__}\n",
             m_str)
         sys.stdout = sys.__stdout__
+
+    if __name__ == '__main__':
+        unittest.main()
