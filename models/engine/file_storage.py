@@ -49,7 +49,7 @@ class FileStorage:
         try:
             with open(FileStorage.file_path, 'r') as file:
                 content = file.read()
-                if content is None:
+                if not content:
                     return
                 objects_dict = json.loads(content)
                 for key, value in objects_dict.items():
