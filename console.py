@@ -140,23 +140,6 @@ class HBNBCommand(cmd.Cmd):
                     return self.do_update(handle_parenthesis(argument))
         return super(HBNBCommand, self).onecmd(argument)
 
-    def do_quit(self, argument):
-        """Quits the command interpreter"""
-        return True
-
-    def help_quit(self):
-        """Help message for the quit command"""
-        print("Quit command to exit the program\n")
-
-    def do_EOF(self, argument):
-        """Indicates and implements the end of file condition"""
-        print()
-        return True
-
-    def emptyline(self):
-        """An empty line + ENTER shouldn’t execute anything"""
-        pass
-
     def do_create(self, argument):
         """
         Creates a new instance of a class, saves it to the JSON file,
@@ -253,6 +236,23 @@ class HBNBCommand(cmd.Cmd):
                     instance.save()
             else:
                 print("** no instance found **")
+
+    def do_quit(self, argument):
+        """Quits the command interpreter"""
+        return True
+
+    def help_quit(self):
+        """Help message for the quit command"""
+        print("Quit command to exit the program\n")
+
+    def do_EOF(self, argument):
+        """Indicates and implements the end of file condition"""
+        print()
+        return True
+
+    def emptyline(self):
+        """An empty line + ENTER shouldn’t execute anything"""
+        pass
 
 
 """prevents execution when code is imported"""
