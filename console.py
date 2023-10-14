@@ -238,12 +238,8 @@ class HBNBCommand(cmd.Cmd):
                 print("** no instance found **")
 
     def do_quit(self, argument):
-        """Quits the command interpreter"""
+        """Quit command to exit the program\n"""
         return True
-
-    def help_quit(self):
-        """Help message for the quit command"""
-        print("Quit command to exit the program\n")
 
     def do_EOF(self, argument):
         """Indicates and implements the end of file condition"""

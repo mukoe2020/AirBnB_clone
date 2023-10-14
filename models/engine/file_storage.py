@@ -46,6 +46,7 @@ class FileStorage:
             json.dump(objects_dict, file)
 
     def reload(self):
+        """ Reloads stored objects from json file """
         try:
             with open(self.__file_path, 'r') as file:
                 content = file.read()
@@ -53,10 +54,10 @@ class FileStorage:
                     return
 
             objects_dict = json.loads(content)
-            
+
             for key, value in objects_dict.items():
                 class_name, obj_id = key.split(".")
-                
+
                 if class_name in class_names:
                     obj_class = class_names[class_name]
                     deserialized_obj = obj_class(**value)
