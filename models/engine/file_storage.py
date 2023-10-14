@@ -25,7 +25,7 @@ class_names = {
 class FileStorage:
     """ this a file that serialize and deserialize object to json file
     and from a json file  """
-    file_path = "file.json"
+    __file_path = "file.json"
     __objects = {}
 
     def all(self):
@@ -39,7 +39,7 @@ class FileStorage:
 
     def save(self):
         """ Serializes __objects to the JSON file (path: __file_path) """
-        with open(FileStorage.file_path, "w") as file:
+        with open(FileStorage.__file_path, "w") as file:
             objects_dict = {}
             for key, value in FileStorage.__objects.items():
                 objects_dict[key] = value.to_dict()
@@ -47,20 +47,20 @@ class FileStorage:
 
     def reload(self):
         try:
-            with open(FileStorage.file_path, 'r') as file:
+            with open(self.__file_path, 'r') as file:
                 content = file.read()
                 if not content:
                     return
-                objects_dict = json.loads(content)
-                for key, value in objects_dict.items():
-                    class_name, obj_id = key.split(".")
-                    # Check if the object is already in __objects
-                    obj_key = f"{class_name}.{obj_id}"
-                    if obj_key not in FileStorage.__objects:
-                        # If it's not in __objects, create and add the object
-                        if class_name in class_names:
-                            class_definition = class_names[class_name]
-                            obj = class_definition(**value)
-                            FileStorage.__objects[obj_key] = obj
+
+            objects_dict = json.loads(content)
+            
+            for key, value in objects_dict.items():
+                class_name, obj_id = key.split(".")
+                
+                if class_name in class_names:
+                    obj_class = class_names[class_name]
+                    deserialized_obj = obj_class(**value)
+                    obj_key = "{}.{}".format(class_name, obj_id)
+                    self.__objects[obj_key] = deserialized_obj
         except FileNotFoundError:
             pass
