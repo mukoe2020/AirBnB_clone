@@ -11,15 +11,15 @@ import sys
 
 
 class TestBaseModel(unittest.TestCase):
-    """ a testcase that test the base_model class """_
+    """ a testcase that test the base_model class """
 
     def test_initialization(self):
         """ testing the base model initialization """
-        model = Basemodel()
-        self.assertIsinstance(model, BaseModel)
+        model = BaseModel()
+        self.assertIsInstance(model, BaseModel)
         self.assertIsInstance(model.id, str)
         self.assertIsInstance(model.created_at, datetime)
-        self.assertIsinstance(model.updated_at, datetime)
+        self.assertIsInstance(model.updated_at, datetime)
 
         model.name = "John"
         model_dict = model.to_dict()
@@ -48,7 +48,7 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(model1.created_at, datetime)
         self.assertTrue(
                 isinstance(getattr(model1, "updated_at", None), datetime))
-        self.assertEqual(model.id, model1.id)
+        self.assertNotEqual(model.id, model1.id)
         self.assertNotEqual(model.name, model1.name)
         self.assertEqual(model.created_at, model1.created_at)
         self.assertNotEqual(
@@ -78,8 +78,8 @@ class TestBaseModel(unittest.TestCase):
             self.assertIn("'created_at': datetime.datetime", m_str)
             self.assertIn("'updated_at': datetime.datetime", m_str)
             self.assertEqual(
-                    f"[{model.__class__.__name__}]({model.id})
-                    {model.__dict__}\n", m_str)
+                    f"[{model.__class__.__name__}]({model.id}) {model.__dict__}\n",
+                    m_str)
             sys.stdout = sys.__stdout__
 
         def test_save_instance_method(self):
@@ -107,8 +107,7 @@ class TestBaseModel(unittest.TestCase):
             model.name = "John"
             model.age = 50
             m_dict = model.to_dict()
-            m_dict = keys {
-                    "__class__", "created_at", "updateed_at", "name", "age"}
+            m_dict_keys = {"__class__", "created_at", "updateed_at", "name", "age"}
             self.assertIsInstance(m_dict, dict)
             self.assertSetEqual(set(m_dict.keys()), m_dict_keys)
             self.assertIsInstance(m_dict["name"], str)
@@ -116,3 +115,7 @@ class TestBaseModel(unittest.TestCase):
 
             with self.assertRaises(TypeError):
                 m_dict = model.to_dict("argument")
+
+        if __name__ == '__main__':
+            unittest.main()
+            BaseModel()
