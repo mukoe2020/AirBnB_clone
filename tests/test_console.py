@@ -1355,10 +1355,10 @@ class TestHBNBCommand_update(unittest.TestCase):
     def test_update_valid_dictionary_with_float_space_notation(self):
         with patch("sys.stdout", new=StringIO()) as output:
             HBNBCommand().onecmd("create BaseModel")
-            testId = output.getvalue().strip()
-        testCmd = "BaseModel.update({}, {{'attr_name': 'attr_value'}})".format(testId)
-        self.assertFalse(HBNBCommand().onecmd(testCmd))
-        test_dict = storage.all()["BaseModel.{}".format(testId)].__dict__
+            td = output.getvalue().strip()
+        tCmd = "BaseModel.update({}, {{'attr_name': 'attr_value'}})".format(td)
+        self.assertFalse(HBNBCommand().onecmd(tCmd))
+        test_dict = storage.all()["BaseModel.{}".format(td)].__dict__
         self.assertNotEqual("attr_value", test_dict["attr_name"])
 
     def test_update_valid_dictionary_with_float_dot_notation(self):
