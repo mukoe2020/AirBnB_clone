@@ -148,7 +148,7 @@ class TestFileStorage(unittest.TestCase):
         all_objects = storage.all()
         all_objects_len = len(all_objects)
 
-        # saving with storage directly
+        """ saving with storage directly """
         model1 = BaseModel()
         all_objects = storage.all()
         self.assertTrue(len(all_objects) == 1 + all_objects_len)
@@ -163,7 +163,7 @@ class TestFileStorage(unittest.TestCase):
             key = model1.__class__.__name__ + "." + model1.id
             self.assertEqual(model1.to_dict(), models_dict[key])
 
-        # saving with storage using model
+        """ saving with storage using model """
         if os.path.exists(self.file_path):
             os.remove(self.file_path)
 
