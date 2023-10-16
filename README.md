@@ -1,1 +1,2 @@
 ## AirBnB Project
+The Airbnb clone project is a property rental and management application that emulates the core features of the popular Airbnb platform. It allows users to list their properties for short-term rentals, search and book accommodations, manage bookings, and more
