@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+"""This module contains the HBNBCommand which
+implements the cmd.Cmd class
+"""
+
 
 import cmd
 import models
